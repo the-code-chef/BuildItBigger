@@ -1,0 +1,94 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.cloud.tools.endpoints-framework-client'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+    defaultConfig {
+        applicationId "me.deepanshusinha.builditbigger"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "ROOT_URL", "\"${ROOT_URL}\"")
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
+    // Specifies one flavor dimension.
+    flavorDimensions "version"
+    productFlavors {
+        free {
+            dimension "version"
+            applicationId "me.deepanshusinha.builditbigger.free"
+            it.buildConfigField 'String', 'Interstitial_ad_unit_id', Interstitial_ad_unit_id
+            it.resValue 'string', 'banner_ad_unit_id', Banner_ad_unit_id
+            it.buildConfigField 'String', 'Ad_app_id', Ad_app_id
+            it.resValue 'string', 'ad_app_id', Ad_app_id
+        }
+        paid {
+            dimension "version"
+            applicationId "me.deepanshusinha.builditbigger.paid"
+        }
+    }
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // Backend External Library
+    endpointsServer project(configuration: 'endpoints', path: ':server')
+    // Appcompat
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    // Timber
+    implementation "com.jakewharton.timber:timber:4.7.1"
+    // Constraint Layout
+    implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha2"
+    // Google Play Services
+    freeImplementation 'com.google.android.gms:play-services-ads:17.1.2'
+    implementation 'com.google.api-client:google-api-client:1.23.0'
+    implementation 'com.google.http-client:google-http-client-android:1.23.0'
+    // Find Bugs
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    testImplementation 'junit:junit:4.12'
+    // Joke External Library
+    implementation project(path: ':joke_lib')
+    // Multi Dex
+    implementation 'com.android.support:multidex:1.0.3'
+    // espresso
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    androidTestImplementation 'androidx.annotation:annotation:1.0.1'
+    androidTestImplementation 'androidx.test:rules:1.1.1-alpha01'
+    androidTestImplementation 'androidx.test:runner:1.1.1-alpha01'
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.1.1-alpha01'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1-alpha01', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.1-alpha01', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'design'
+        exclude group: 'com.android.support', module: 'recyclerview-v7'
+    }
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+}
+
